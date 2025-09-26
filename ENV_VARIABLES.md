@@ -33,7 +33,7 @@ NODE_ENV=production
 PORT=3001
 MONGO_URL=mongodb://mongo:password@gondola.proxy.rlwy.net:23948
 BASE_URL_PROD=https://esdk-group-test-production.up.railway.app
-USER_URL=https://esdk-group-test-production.up.railway.app
+USER_URL=https://esdk-group-front-test.vercel.app
 ```
 
 ## 🔧 **Логика выбора базы данных**

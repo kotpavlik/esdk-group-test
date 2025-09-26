@@ -9,9 +9,9 @@ const getMongoURI = (): string => {
   if (nodeEnv === 'development') {
     return process.env.MONGO_LOCAL || 'mongodb://localhost:27017/esdk_group_test';
   } else {
-    // Для Railway используем переменную окружения MONGO_URL
-    // Если она не задана, используем fallback
-    return process.env.MONGO_URL || process.env.MONGODB_URL || 'mongodb://localhost:27017/esdk_group_test_prod';
+    // Для Railway используем MONGO_PUBLIC_URL (внешний connection string)
+    // Если он не задан, используем MONGO_URL как fallback
+    return process.env.MONGO_PUBLIC_URL || process.env.MONGO_URL || process.env.MONGODB_URL || 'mongodb://localhost:27017/esdk_group_test_prod';
   }
 };
 

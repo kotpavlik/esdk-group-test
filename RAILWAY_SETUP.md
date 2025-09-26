@@ -18,10 +18,12 @@
 ```env
 NODE_ENV=production
 PORT=3001
-MONGO_URL=<MongoDB connection string from Railway>
+MONGO_PUBLIC_URL=mongodb://mongo:password@gondola.proxy.rlwy.net:23948
 BASE_URL_PROD=https://your-app-name.up.railway.app
 USER_URL=https://your-app-name.up.railway.app
 ```
+
+**Важно:** Используйте `MONGO_PUBLIC_URL` (внешний connection string), а не `MONGO_URL` (внутренний).
 
 ### 3. Получение MongoDB connection string
 

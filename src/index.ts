@@ -6,6 +6,7 @@ import swaggerUi from 'swagger-ui-express';
 import dotenv from "dotenv";
 import routes from './routes/routes';
 import connectDB from './db/connection';
+import { databaseConfig } from './config/database';
 
 dotenv.config();
 
@@ -13,14 +14,18 @@ const PORT = process.env.PORT || 3000;
 const NODE_ENV = process.env.NODE_ENV || 'development';
 
 async function bootstrap() {
-  // Подключаемся к MongoDB
+  // MongoDB
   await connectDB();
   
   const app = express();
 
-  // CORS 
+  // CORS настройки в зависимости от окружения
+  const corsOrigins: string[] = NODE_ENV === 'development' 
+    ? ['http://localhost:3000', 'http://localhost:3001', process.env.USER_URL || 'http://localhost:3000']
+    : [process.env.BASE_URL_PROD || 'https://esdk-group-test-production.up.railway.app', process.env.USER_URL].filter(Boolean) as string[];
+    
   app.use(cors({
-    origin: ['http://localhost:3000', process.env.USER_URL || 'http://localhost:3000'],
+    origin: corsOrigins,
     credentials: true
   }));
 
@@ -63,8 +68,10 @@ async function bootstrap() {
       },
       servers: [
         {
-          url: `http://localhost:${PORT}/v1`,
-          description: 'Development server'
+          url: NODE_ENV === 'development' 
+            ? `http://localhost:${PORT}/v1`
+            : `${process.env.BASE_URL_PROD || 'https://esdk-group-test-production.up.railway.app'}/v1`,
+          description: NODE_ENV === 'development' ? 'Development server' : 'Production server'
         }
       ],
       tags: [
@@ -101,12 +108,17 @@ async function bootstrap() {
     });
   });
 
+  const baseUrl = NODE_ENV === 'development' 
+    ? `http://localhost:${PORT}`
+    : process.env.BASE_URL_PROD || 'https://esdk-group-test-production.up.railway.app';
+
   app.listen(PORT, () => {
     console.log(`🚀 ESDK Group Test API is running on port ${PORT}`);
-    console.log(`📚 Swagger docs available at http://localhost:${PORT}/v1/docs`);
-    console.log(`❤️  Health check at http://localhost:${PORT}/v1/health`);
+    console.log(`📚 Swagger docs available at ${baseUrl}/v1/docs`);
+    console.log(`❤️  Health check at ${baseUrl}/v1/health`);
     console.log(`🌍 Environment: ${NODE_ENV}`);
-    console.log(`🔗 CORS enabled for: ${['http://localhost:3000', process.env.USER_URL].join(', ')}`);
+    console.log(`🔗 CORS enabled for: ${corsOrigins.join(', ')}`);
+    console.log(`🌐 Base URL: ${baseUrl}`);
   });
 }
 

@@ -34,7 +34,10 @@ export const databaseConfig = {
   app: {
     port: parseInt(process.env.PORT || '3000'),
     nodeEnv: process.env.NODE_ENV || 'development',
-    corsOrigin: process.env.USER_URL || 'http://localhost:3000'
+    corsOrigin: process.env.USER_URL || 'http://localhost:3000',
+    baseUrl: process.env.NODE_ENV === 'development' 
+      ? process.env.BASE_URL_LOCAL || 'http://localhost:3001'
+      : process.env.BASE_URL_PROD || 'https://esdk-group-test-production.up.railway.app'
   }
 };
 

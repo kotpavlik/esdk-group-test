@@ -21,8 +21,6 @@ export const databaseConfig = {
     port: parseInt(process.env.MONGODB_PORT || '27017'),
     database: process.env.MONGODB_DATABASE || (process.env.NODE_ENV === 'development' ? 'esdk_group_test' : 'esdk_group_test_prod'),
     options: {
-      useNewUrlParser: true,
-      useUnifiedTopology: true,
       maxPoolSize: 10,
       serverSelectionTimeoutMS: 5000,
       socketTimeoutMS: 45000,

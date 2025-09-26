@@ -21,8 +21,8 @@ async function bootstrap() {
 
   // CORS настройки в зависимости от окружения
   const corsOrigins: string[] = NODE_ENV === 'development' 
-    ? ['http://localhost:3000', 'http://localhost:3001', process.env.USER_URL || 'http://localhost:3000']
-    : [process.env.BASE_URL_PROD || 'https://esdk-group-test-production.up.railway.app', process.env.USER_URL].filter(Boolean) as string[];
+    ? ['http://localhost:3000', 'http://localhost:5173', 'http://localhost:3001', process.env.USER_URL || 'http://localhost:3000']
+    : [process.env.BASE_URL_PROD || 'https://esdk-group-test-production.up.railway.app','https://esdk-group-front-test.vercel.app/', process.env.USER_URL].filter(Boolean) as string[];
     
   app.use(cors({
     origin: corsOrigins,

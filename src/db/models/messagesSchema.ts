@@ -1,4 +1,5 @@
 import mongoose, { Schema, Document } from 'mongoose';
+import { isBelarusPhoneNumber } from '../../utils/phoneValidation';
 
 // Интерфейс для сообщения
 export interface IMessage extends Document {
@@ -16,14 +17,9 @@ const MessageSchema: Schema = new Schema({
     trim: true,
     validate: {
       validator: function(v: string) {
-        // Валидация белорусского номера телефона
-        // Мобильные операторы: 25 (life:), 29 (A1/МТС), 33 (МТС), 44 (A1)
-        const mobileRegex = /^\+375(25|29|33|44)\d{7}$/;
-        // Стационарные номера: 17 (Минск), 162 (Брест), 212 (Витебск), 232 (Гомель), 152 (Гродно), 222 (Могилев)
-        const landlineRegex = /^\+375(17|162|212|232|152|222)\d{7}$/;
-        return mobileRegex.test(v) || landlineRegex.test(v);
+        return isBelarusPhoneNumber(v);
       },
-      message: 'Номер телефона должен быть белорусским. Мобильные: +375(25|29|33|44)XXXXXXX, Стационарные: +375(17|162|212|232|152|222)XXXXXXX'
+      message: 'Номер телефона должен быть белорусским. Поддерживаются форматы: +375XXXXXXXXX или 8-0XX-XXX-XXXX'
     }
   },
   message: {

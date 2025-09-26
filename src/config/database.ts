@@ -2,16 +2,14 @@ import dotenv from 'dotenv';
 
 dotenv.config();
 
-// Определяем URI в зависимости от окружения
+// Определяем URI в зависимости от окружения (аналогично NestJS)
 const getMongoURI = (): string => {
   const nodeEnv = process.env.NODE_ENV || 'development';
   
-  if (nodeEnv === 'development') {
-    return process.env.MONGO_LOCAL || 'mongodb://localhost:27017/esdk_group_test';
+  if (nodeEnv === 'production') {
+    return process.env.MONGO_URL || 'mongodb://localhost:27017/esdk_group_test_prod';
   } else {
-    // Для Railway используем MONGO_PUBLIC_URL (внешний connection string)
-    // Если он не задан, используем MONGO_URL как fallback
-    return process.env.MONGO_PUBLIC_URL || process.env.MONGO_URL || process.env.MONGODB_URL || 'mongodb://localhost:27017/esdk_group_test_prod';
+    return process.env.MONGO_LOCAL || 'mongodb://localhost:27017/esdk_group_test';
   }
 };
 

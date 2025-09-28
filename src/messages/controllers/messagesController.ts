@@ -22,8 +22,6 @@ class MessagesController {
     async SendMessage(req: Request, res: Response): Promise<void> {
         try {
             const { phoneNumber, message } = req.body;
-
-            // Валидация обязательных полей
             if (!phoneNumber || !message) {
                 res.status(400).json({
                     success: false,
@@ -32,7 +30,6 @@ class MessagesController {
                 return;
             }
 
-            // Дополнительная валидация
             if (typeof phoneNumber !== 'string' || typeof message !== 'string') {
                 res.status(400).json({
                     success: false,
@@ -83,7 +80,6 @@ class MessagesController {
                 });
                 return;
             }
-
             const data = await messagesService.deleteMessage(id);
             res.status(200).json({
                 success: true,

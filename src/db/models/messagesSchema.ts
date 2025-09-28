@@ -1,7 +1,6 @@
 import mongoose, { Schema, Document } from 'mongoose';
 import { isBelarusPhoneNumber } from '../../utils/phoneValidation';
 
-// Интерфейс для сообщения
 export interface IMessage extends Document {
   phoneNumber: string;
   message: string;
@@ -9,7 +8,6 @@ export interface IMessage extends Document {
   updatedAt: Date;
 }
 
-// Схема сообщения
 const MessageSchema: Schema = new Schema({
   phoneNumber: {
     type: String,
@@ -30,11 +28,10 @@ const MessageSchema: Schema = new Schema({
     maxlength: [1000, 'Сообщение слишком длинное (максимум 1000 символов)']
   }
 }, {
-  timestamps: true, // Автоматически добавляет createdAt и updatedAt
+  timestamps: true, 
   versionKey: false
 });
 
-// Индексы для оптимизации поиска
 MessageSchema.index({ phoneNumber: 1 });
 MessageSchema.index({ createdAt: -1 });
 

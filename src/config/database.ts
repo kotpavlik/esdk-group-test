@@ -2,7 +2,7 @@ import dotenv from 'dotenv';
 
 dotenv.config();
 
-// Определяем URI в зависимости от окружения (аналогично NestJS)
+// Смотрим окружение дев или прод чтобы подключиться к нужной базе данных
 const getMongoURI = (): string => {
   const nodeEnv = process.env.NODE_ENV || 'development';
   

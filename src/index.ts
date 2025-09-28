@@ -6,7 +6,8 @@ import swaggerUi from 'swagger-ui-express';
 import dotenv from "dotenv";
 import routes from './routes/routes';
 import connectDB from './db/connection';
-import { databaseConfig } from './config/database';
+import { staticSwaggerSpec } from './swagger/staticSwagger';
+
 
 dotenv.config();
 
@@ -60,38 +61,56 @@ async function bootstrap() {
 
   app.use('/v1', routes);
 
-  // Swagger документация
-  const swaggerOptions: swaggerJsdoc.Options = {
-    definition: {
-      openapi: '3.0.0',
-      info: {
-        title: 'ESDK Group Test API',
-        description: 'This application serves for ESDK Group test',
-        version: '1.0.0',
-        contact: {
-          name: 'Igor Anufriev',
-          email: 'developers@esdkgroup.com'
-        }
-      },
-      servers: [
-        {
-          url: NODE_ENV === 'development' 
-            ? `http://localhost:${PORT}/v1`
-            : `${process.env.BASE_URL_PROD || 'https://esdk-group-test-production.up.railway.app'}/v1`,
-          description: NODE_ENV === 'development' ? 'Development server' : 'Production server'
-        }
-      ],
-      tags: [
-        {
-          name: 'ESDK',
-          description: 'Main API operations'
-        }
-      ]
-    },
-    apis: ['./src/routes/*.ts'] 
-  };
-
-  const swaggerSpec = swaggerJsdoc(swaggerOptions);
+  // Swagger документация - используем статическую документацию
+  let swaggerSpec: any;
+  
+  if (NODE_ENV === 'development') {
+    // В development пытаемся загрузить из файлов
+    try {
+      const swaggerOptions: swaggerJsdoc.Options = {
+        definition: {
+          openapi: '3.0.0',
+          info: {
+            title: 'ESDK Group Test API',
+            description: 'This application serves for ESDK Group test',
+            version: '1.0.0',
+            contact: {
+              name: 'Igor Anufriev',
+              email: 'developers@esdkgroup.com'
+            }
+          },
+          servers: [
+            {
+              url: `http://localhost:${PORT}/v1`,
+              description: 'Development server'
+            }
+          ],
+          tags: [
+            {
+              name: 'Messages',
+              description: 'Управление сообщениями'
+            }
+          ]
+        },
+        apis: ['./src/routes/*.ts', './src/routes/swagger.ts']
+      };
+      
+      swaggerSpec = swaggerJsdoc(swaggerOptions);
+      
+      if (!swaggerSpec.paths || Object.keys(swaggerSpec.paths).length === 0) {
+        console.log('⚠️  Swagger: No API paths found in development, using static documentation');
+        swaggerSpec = staticSwaggerSpec;
+      }
+    } catch (error) {
+      console.log('⚠️  Swagger: Error loading documentation in development, using static documentation');
+      swaggerSpec = staticSwaggerSpec;
+    }
+  } else {
+    // В production используем статическую документацию
+    console.log('📚 Swagger: Using static documentation for production');
+    swaggerSpec = staticSwaggerSpec;
+  }
+  
   app.use('/v1/docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec));
 
   // 404 handler
